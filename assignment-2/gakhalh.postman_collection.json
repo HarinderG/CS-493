@@ -1,0 +1,717 @@
+{
+	"info": {
+		"_postman_id": "337cf7ca-38cc-46fb-a897-d9525dbc8b3d",
+		"name": "Assignment2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "(1) Get 30 public",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9837c949-554a-4993-a631-6ba6ddf61337",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b8fc00f-e381-4c6e-a424-d15c087047f6",
+						"exec": [
+							"pm.test(\"Gist count is 30 or more.\", () =>{\r",
+							"    pm.expect(pm.response.json().length).to.be.above(29)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/public",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"public"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(2) Wolfordj Gists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2f22ad3f-ef18-4a55-9079-0c2016c20655",
+						"exec": [
+							"pm.test(\"At least 1 gist\", () =>{\r",
+							"    pm.expect(pm.response.json().length).to.be.above(0)\r",
+							"})  "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/users/wolfordj/gists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"users",
+						"wolfordj",
+						"gists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(3) Check # of Gists",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b560d634-f1e0-4219-9346-925c7b5224b4",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c71fd54d-a718-4bfa-bf20-5b0f5e985923",
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {\r",
+							"  pm.environment.set(\"prevRecords\", pm.response.json().length);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/users/harinderg/gists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"users",
+						"harinderg",
+						"gists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(3) Create new Gist",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d43bf43c-165f-4c7e-ad01-5be0bac520bc",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f962ca92-1e47-4327-9ac9-13d1ca4c8cc3",
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {\r",
+							"  pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"Test gist.\",\r\n    \"public\": true,\r\n    \"files\": {\r\n        \"file.py\": {\r\n            \"content\": \"New content. 99\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/gists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(3) Check if Gist was added",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "80be91bf-301d-4676-93bd-944ba0e13cc9",
+						"exec": [
+							"pm.test(\"Number of records increased by 1\", function() {\r",
+							"    pm.expect(pm.response.json().length).to.equal(pm.environment.get(\"prevRecords\") + 1);  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/users/harinderg/gists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"users",
+						"harinderg",
+						"gists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(4) Varify Gist contents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af6eca8e-5d1c-4562-983e-12eb4491e669",
+						"exec": [
+							"pm.test(\"Varify gist contents\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson[0].description).to.eql(\"Test gist.\")\r",
+							"    pm.expect(responseJson[0].public).to.eql(true)\r",
+							"    pm.expect(Object.keys(responseJson[0].files)[0]).to.eql(\"file.py\")\r",
+							"    pm.expect(Object.keys(responseJson[0].files).length).to.eql(1)\r",
+							"\r",
+							"    pm.environment.set(\"gist_id\", responseJson[0].id);\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/users/harinderg/gists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"users",
+						"harinderg",
+						"gists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(5) Edit Gist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1750c7d7-a990-42ad-b9c9-1cb57e3432a9",
+						"exec": [
+							"pm.test(\"Status code is 200 for patch\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"WOW THIS IS SO COOL!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(5) Varify edit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "93d19950-4e57-44fd-99eb-be2400de1930",
+						"exec": [
+							"pm.test(\"Varify gist contents\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.description).to.eql(\"WOW THIS IS SO COOL!\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(6) Check if Gist is unstarred",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "586a5d06-b6ec-401a-85ce-1e5436ea502b",
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}/star",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}",
+						"star"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(6) Star the Gist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa296a02-7ea4-40b8-a2a2-2f9dad090e21",
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"  pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}/star",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}",
+						"star"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(6) Check if Gist has been starred",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "90edefc8-c1b3-42ff-9d20-5b36338667a3",
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"  pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}/star",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}",
+						"star"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(7) Varify Gist is in starred list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d571ee5f-2ce0-42ab-a307-9bab9e59d178",
+						"exec": [
+							"pm.test(\"Check if gest\", () => {\r",
+							"  pm.expect(pm.response.json()[0].id).to.eql(pm.environment.get('gist_id'))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/starred",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"starred"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(8) Check if Gist is starred",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b66137bb-c161-45b1-9af6-efe246573f0b",
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"  pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}/star",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}",
+						"star"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(8) Unstar the Gist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8f8c9c0d-f86e-45de-9856-3b212d947052",
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"  pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}/star",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}",
+						"star"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(8) Check if Gist is unstarred",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fff9c991-6f01-4f45-af2d-7c26eb941192",
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}/star",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}",
+						"star"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(9) Check if Gist exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d59b923-d16f-427e-81f1-c0d7863e1bd8",
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(9) Delete the Gist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c053def1-9f38-4c1f-a2dc-4cf51677bab3",
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"  pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(9) Check if the Gist no longer exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "127b3684-7930-4bc1-ba17-d82f5007fc34",
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/gists/{{gist_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"gists",
+						"{{gist_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"protocolProfileBehavior": {}
+}
