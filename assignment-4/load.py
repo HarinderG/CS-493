@@ -1,3 +1,9 @@
+'''
+	Harinder Gakhal
+	CS493 - Assignment 4: Intermediate Rest API
+	10/27/2020
+'''
+
 from flask import Blueprint, request, jsonify
 from google.cloud import datastore
 import json
@@ -17,7 +23,7 @@ def loads_get_post():
 		client.put(new_load)
 		new_load['id'] = new_load.key.id
 		new_load['self'] = request.url + '/' + str(new_load.key.id)
-		return (jsonify(new_load), 200)
+		return (jsonify(new_load), 201)
 	elif request.method == 'GET':
 		query = client.query(kind="loads")
 		q_limit = int(request.args.get('limit', '3'))
@@ -32,29 +38,34 @@ def loads_get_post():
 			next_url = None
 		for e in results:
 			e["id"] = e.key.id
+			e["self"] = request.url_root + "loads/" + str(e.key.id)
+			if e["carrier"] != None:
+				e['carrier']['self'] = request.url_root + "boats/" + str(e['carrier']['id'])
 		output = {"loads": results}
 		if next_url:
 			output["next"] = next_url
-		return json.dumps(output)
+		return (jsonify(output), 200)
 
-@bp.route('/<id>', methods=['PUT','DELETE','GET'])
-def loads_put_delete(id):
-	if request.method == 'PUT':
-		content = request.get_json()
-		load_key = client.key("loads", int(id))
-		load = client.get(key=load_key)
-		load.update({"name": content["name"]})
-		client.put(load)
-		return ('',200)
-	elif request.method == 'DELETE':
+@bp.route('/<id>', methods=['DELETE','GET'])
+def loads_get_delete(id):
+	if request.method == 'DELETE':
 		key = client.key("loads", int(id))
+		load = client.get(key=key)
+		if load == None:
+			return (jsonify({"Error": "No load with this load_id exists"}), 404)
+		if load['carrier'] != None:
+			boat = client.get(key=client.key("boats", load['carrier']['id']))
+			boat["loads"].remove({'id': load.key.id})
+			client.put(boat)
 		client.delete(key)
-		return ('',200)
+		return (jsonify(''),204)
 	elif request.method == 'GET':
 		load_key = client.key("loads", int(id))
 		load = client.get(key=load_key)
 		if load == None:
 			return (jsonify({"Error": "No load with this load_id exists"}), 404)
+		if load["carrier"]:
+			load["carrier"]["self"] = request.url_root + "boats/" + str(load["carrier"]["id"])
 		load["id"] = id
 		load["self"] = request.url
 		return (jsonify(load), 200)

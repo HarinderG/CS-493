@@ -1,3 +1,9 @@
+'''
+	Harinder Gakhal
+	CS493 - Assignment 4: Intermediate Rest API
+	10/27/2020
+'''
+
 from google.cloud import datastore
 from flask import Flask, request, jsonify
 import json
